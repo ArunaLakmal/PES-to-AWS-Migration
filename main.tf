@@ -54,10 +54,6 @@ resource "aws_route_table" "pes_public_rt" {
 
 #---- Subnets ----
 
-data "aws_availability_zones" "available" {
-  state = "available"
-}
-
 resource "aws_subnet" "pes_public1_subnet" {
   vpc_id = "${aws_vpc.pes_vpc.id}"
   cidr_block = "${var.cidrs["public1"]}"
