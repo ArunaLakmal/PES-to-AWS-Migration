@@ -37,7 +37,7 @@ resource "aws_nat_gateway" "pes_nat_gw" {
   }
 }
 
-#---- RT ----
+#---- Public RT ----
 resource "aws_route_table" "pes_public_rt" {
   vpc_id = "${aws_vpc.pes_vpc.id}"
 
@@ -51,7 +51,20 @@ resource "aws_route_table" "pes_public_rt" {
   }
 }
 
-#---- private subnet default routing is not set
+#---- private RT
+
+resource "aws_route_table" "pes_private_rt" {
+  vpc_id = "${aws_vpc.pes_vpc.id}"
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_nat_gateway.pes_nat_gw.id}"
+  }
+
+  tags = {
+    Name = "pes_private_rt"
+  }
+}
 
 #---- Subnets ----
 
@@ -107,5 +120,17 @@ resource "aws_subnet" "pes_rds_subnet" {
 
   tags = {
     Name = "pes_rds"
+  }
+}
+
+#----- RDS Subnet group for multiple subnets -----
+
+resource "aws_db_subnet_group" "pes_db_subnet_group" {
+  name = "pes_rds_subnet_group"
+
+  subnet_ids = ["${aws_subnet.pes_rds_subnet.id}",]
+
+  tags = {
+      Name = "pes_rds_subnet_group"
   }
 }
