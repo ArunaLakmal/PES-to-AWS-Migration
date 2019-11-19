@@ -10,3 +10,7 @@ cidrs = {
   rds2     = "10.0.6.0/24"
   rds3     = "10.0.7.0/24"
 }
+db_instance_class = "db.t2.micro"
+dbname = "pesdb"
+dbuser = "pesuser"
+dbpassword = "pespassword"

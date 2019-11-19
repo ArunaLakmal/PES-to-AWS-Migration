@@ -6,3 +6,8 @@ variable "vpc_cidr" {}
 variable "cidrs" {
   type = "map"
 }
+
+variable "db_instance_class" {}
+variable "dbname" {}
+variable "dbuser" {}
+variable "dbpassword" {}
