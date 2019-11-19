@@ -128,9 +128,53 @@ resource "aws_subnet" "pes_rds_subnet" {
 resource "aws_db_subnet_group" "pes_db_subnet_group" {
   name = "pes_rds_subnet_group"
 
-  subnet_ids = ["${aws_subnet.pes_rds_subnet.id}",]
+  subnet_ids = ["${aws_subnet.pes_rds_subnet.id}"]
 
   tags = {
-      Name = "pes_rds_subnet_group"
+    Name = "pes_rds_subnet_group"
+  }
+}
+
+#---- Subnet Associations ----
+resource "aws_route_table_association" "pes_public1_association" {
+  subnet_id      = "${aws_subnet.pes_public1_subnet.id}"
+  route_table_id = "${aws_route_table.pes_public_rt.id}"
+}
+
+resource "aws_route_table_association" "pes_public2_association" {
+  subnet_id      = "${aws_subnet.pes_public2_subnet.id}"
+  route_table_id = "${aws_route_table.pes_public_rt.id}"
+}
+
+resource "aws_route_table_association" "pes_private1_association" {
+  subnet_id      = "${aws_subnet.pes_private1_subnet.id}"
+  route_table_id = "${aws_route_table.pes_private_rt.id}"
+}
+
+resource "aws_route_table_association" "pes_private2_association" {
+  subnet_id      = "${aws_subnet.pes_private2_subnet.id}"
+  route_table_id = "${aws_route_table.pes_private_rt.id}"
+}
+
+#---- Security Groups -----
+
+resource "aws_security_group" "pes_public_sg" {
+  name        = "pes_public_sg"
+  description = "ELB Public Access"
+  vpc_id      = "${aws_vpc.pes_vpc.id}"
+
+  #Http Allow
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
