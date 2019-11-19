@@ -158,6 +158,7 @@ resource "aws_route_table_association" "pes_private2_association" {
 
 #---- Security Groups -----
 
+#Public Security Group
 resource "aws_security_group" "pes_public_sg" {
   name        = "pes_public_sg"
   description = "ELB Public Access"
@@ -171,10 +172,53 @@ resource "aws_security_group" "pes_public_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  #Out going all allow
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = -1
     cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+#Private Security Group
+
+resource "aws_security_group" "pes_private_sg" {
+  name        = "pes_private_sg"
+  description = "Access for Private Instances"
+  vpc_id      = "${aws_vpc.pes_vpc.id}"
+
+  #VPC Local Traffic
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${var.vpc_cidr}"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+#RDS Security Group
+
+resource "aws_security_group" "rds_security_group" {
+  name        = "rds_security_group"
+  description = "Access for RDS Instances"
+  vpc_id      = "${aws_vpc.pes_vpc.id}"
+
+  #SQL Access from Public and Private Security Groups
+  ingress {
+    from_port = 3306
+    to_port   = 3306
+    protocol  = "tcp"
+
+    security_groups = ["${aws_security_group.pes_public_sg.id}",
+      "${aws_security_group.pes_private_sg.id}",
+    ]
   }
 }
