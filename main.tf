@@ -5,8 +5,8 @@ provider "aws" {
 #-----Deploying Networking Resources-----
 module "networking" {
   source = "./networking"
-  vpc_cidr = "${var.cidrs}"
-  
+  vpc_cidr           = "${var.vpc_cidr}"
+  cidrs = "${var.cidrs}"
 }
 
 
