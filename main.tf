@@ -334,7 +334,7 @@ resource "aws_alb_listener_rule" "pes_rule_1" {
   }
 
   condition {
-    field = "path-pattern"
+    field = "host-header"
 
     values = ["employee-services-stg.test.com"]
   }
