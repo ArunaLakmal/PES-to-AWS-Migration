@@ -124,10 +124,10 @@ resource "aws_subnet" "pes_rds1_subnet" {
 }
 
 resource "aws_subnet" "pes_rds2_subnet" {
-  vpc_id = "${aws_vpc.pes_vpc.id}"
-  cidr_block = "${var.cidrs["rds2"]}"
+  vpc_id                  = "${aws_vpc.pes_vpc.id}"
+  cidr_block              = "${var.cidrs["rds2"]}"
   map_public_ip_on_launch = false
-  availability_zone = "${data.aws_availability_zones.available.names[1]}"
+  availability_zone       = "${data.aws_availability_zones.available.names[1]}"
 
   tags = {
     Name = "pes_rds2"
@@ -140,7 +140,8 @@ resource "aws_db_subnet_group" "pes_db_subnet_group" {
   name = "pes_rds_subnet_group"
 
   subnet_ids = ["${aws_subnet.pes_rds1_subnet.id}",
-     "${aws_subnet.pes_rds2_subnet.id}",]
+    "${aws_subnet.pes_rds2_subnet.id}",
+  ]
 
   tags = {
     Name = "pes_rds_subnet_group"
