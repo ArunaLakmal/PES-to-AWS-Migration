@@ -336,7 +336,7 @@ resource "aws_alb_listener_rule" "pes_rule_1" {
   condition {
     field = "path-pattern"
 
-    values = ["/"]
+    values = ["employee-services-stg.test.com"]
   }
 
   listener_arn = "${aws_alb_listener.pes_alb_listener.id}"
