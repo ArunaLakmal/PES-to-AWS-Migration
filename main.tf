@@ -287,8 +287,8 @@ resource "aws_elb" "pes_elb" {
 
 data "aws_ami" "golden_ami" {
   most_recent = true
-  owners = ["amazon"]
-  
+  owners      = ["amazon"]
+
   filter {
     name   = "root-device-type"
     values = ["ebs"]
@@ -298,4 +298,9 @@ data "aws_ami" "golden_ami" {
     name   = "virtualization-type"
     values = ["hvm"]
   }
+}
+
+data "template_file" "user-init" {
+  count    = 2
+  template = "${file("${path.module}/userdata.tpl")}"
 }
