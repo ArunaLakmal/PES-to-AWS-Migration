@@ -140,7 +140,7 @@ resource "aws_db_subnet_group" "pes_db_subnet_group" {
   name = "pes_rds_subnet_group"
 
   subnet_ids = ["${aws_subnet.pes_rds1_subnet.id}",
-     "${aws_subnet.pes_rds2_subnet}",]
+     "${aws_subnet.pes_rds2_subnet.id}",]
 
   tags = {
     Name = "pes_rds_subnet_group"
