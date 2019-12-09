@@ -299,6 +299,7 @@ resource "aws_alb_target_group" "pes_target_group_one" {
   name     = "pes-target-group-one"
   port     = 80
   protocol = "HTTP"
+  vpc_id   = "${aws_vpc.pes_vpc.id}"
 
   lifecycle {
     create_before_destroy = true
