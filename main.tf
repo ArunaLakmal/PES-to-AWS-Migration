@@ -295,8 +295,8 @@ resource "aws_alb" "pes-app-alb" {
   enable_deletion_protection = true
 }
 
-resource "aws_alb_target_group" "pes_target_group_1" {
-  name     = "pes_target_group_one"
+resource "aws_alb_target_group" "pes_target_group_one" {
+  name     = "pes_target_group_1"
   port     = 80
   protocol = "HTTP"
 
@@ -317,7 +317,7 @@ resource "aws_alb_target_group" "pes_target_group_1" {
 
 resource "aws_alb_listener" "pes_alb_listener" {
   default_action {
-    target_group_arn = "${aws_alb_target_group.pes_target_group_1.arn}"
+    target_group_arn = "${aws_alb_target_group.pes_target_group_one.arn}"
     type             = "forward"
   }
 
@@ -328,7 +328,7 @@ resource "aws_alb_listener" "pes_alb_listener" {
 
 resource "aws_alb_listener_rule" "pes_rule_1" {
   action {
-    target_group_arn = "${aws_alb_target_group.pes_target_group_1.arn}"
+    target_group_arn = "${aws_alb_target_group.pes_target_group_one.arn}"
     type             = "forward"
   }
 
