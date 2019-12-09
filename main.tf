@@ -342,3 +342,24 @@ resource "aws_alb_listener_rule" "pes_rule_1" {
   listener_arn = "${aws_alb_listener.pes_alb_listener.id}"
   priority     = 100
 }
+
+resource "aws_autoscaling_group" "pes_asg" {
+  name                      = "pes-app-asg"
+  max_size                  = 6
+  min_size                  = 2
+  health_check_grace_period = 300
+  health_check_type         = "ELB"
+  desired_capacity          = 2
+  force_delete              = true
+  launch_configuration      = "${aws_launch_configuration.pes_lc.id}"
+
+  vpc_zone_identifier = ["${aws_subnet.pes_private1_subnet.id}",
+    "${aws_subnet.pes_private2_subnet.id}",
+  ]
+
+  target_group_arns = ["${aws_alb_target_group.pes_target_group_one.id}"]
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
