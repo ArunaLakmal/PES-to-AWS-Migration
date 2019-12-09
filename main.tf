@@ -296,7 +296,7 @@ resource "aws_alb" "pes-app-alb" {
 }
 
 resource "aws_alb_target_group" "pes_target_group_1" {
-  name     = "pes_target_group_1"
+  name     = "pes_target_group_one"
   port     = 80
   protocol = "HTTP"
 
