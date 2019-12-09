@@ -112,14 +112,25 @@ resource "aws_subnet" "pes_private2_subnet" {
   }
 }
 
-resource "aws_subnet" "pes_rds_subnet" {
+resource "aws_subnet" "pes_rds1_subnet" {
   vpc_id                  = "${aws_vpc.pes_vpc.id}"
   cidr_block              = "${var.cidrs["rds1"]}"
   map_public_ip_on_launch = false
   availability_zone       = "${data.aws_availability_zones.available.names[0]}"
 
   tags = {
-    Name = "pes_rds"
+    Name = "pes_rds1"
+  }
+}
+
+resource "aws_subnet" "pes_rds2_subnet" {
+  vpc_id = "${aws_vpc.pes_vpc.id}"
+  cidr_block = "${var.cidrs["rds2"]}"
+  map_public_ip_on_launch = false
+  availability_zone = "${data.aws_availability_zones.available.names[1]}"
+
+  tags = {
+    Name = "pes_rds2"
   }
 }
 
@@ -128,7 +139,8 @@ resource "aws_subnet" "pes_rds_subnet" {
 resource "aws_db_subnet_group" "pes_db_subnet_group" {
   name = "pes_rds_subnet_group"
 
-  subnet_ids = ["${aws_subnet.pes_rds_subnet.id}"]
+  subnet_ids = ["${aws_subnet.pes_rds1_subnet.id}",
+     "${aws_subnet.pes_rds2_subnet}",]
 
   tags = {
     Name = "pes_rds_subnet_group"
