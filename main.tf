@@ -301,7 +301,6 @@ data "aws_ami" "golden_ami" {
 }
 
 data "template_file" "user-init" {
-  count    = 2
   template = "${file("${path.module}/userdata.tpl")}"
 }
 
