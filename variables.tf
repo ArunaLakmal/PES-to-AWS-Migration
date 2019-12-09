@@ -15,3 +15,4 @@ variable "elb_healthy_threshold" {}
 variable "elb_unhealthy_threshold" {}
 variable "elb_timeout" {}
 variable "elb_interval" {}
+variable "pes_instance_type" {}

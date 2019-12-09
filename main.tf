@@ -304,3 +304,14 @@ data "template_file" "user-init" {
   count    = 2
   template = "${file("${path.module}/userdata.tpl")}"
 }
+
+resource "aws_launch_configuration" "pes_lc" {
+  name_prefix   = "pes_lc-"
+  image_id      = "${data.aws_ami.golden_ami.id}"
+  instance_type = "${var.pes_instance_type}"
+  user_data     = "${data.template_file.user-init.rendered}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
