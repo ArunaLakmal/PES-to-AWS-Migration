@@ -250,41 +250,7 @@ resource "aws_db_instance" "pes_rds_instance" {
   skip_final_snapshot    = true
 }
 
-#---- Load Balancer ----
-resource "aws_elb" "pes_elb" {
-  name = "pes-elb"
-
-  subnets = ["${aws_subnet.pes_public1_subnet.id}",
-    "${aws_subnet.pes_public2_subnet.id}",
-  ]
-
-  security_groups = ["${aws_security_group.pes_public_sg.id}"]
-
-  listener {
-    instance_port     = 80
-    instance_protocol = "http"
-    lb_port           = 80
-    lb_protocol       = "http"
-  }
-
-  health_check {
-    healthy_threshold   = "${var.elb_healthy_threshold}"
-    unhealthy_threshold = "${var.elb_unhealthy_threshold}"
-    timeout             = "${var.elb_timeout}"
-    target              = "TCP:80"
-    interval            = "${var.elb_interval}"
-  }
-
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
-
-  tags = {
-    Name = "pes-elb"
-  }
-}
-
+#----- AMI -----
 data "aws_ami" "golden_ami" {
   most_recent = true
   owners      = ["amazon"]
@@ -304,11 +270,94 @@ data "template_file" "user-init" {
   template = "${file("${path.module}/userdata.tpl")}"
 }
 
+#----- Launch Configuration ----
 resource "aws_launch_configuration" "pes_lc" {
   name_prefix   = "pes_lc-"
   image_id      = "${data.aws_ami.golden_ami.id}"
   instance_type = "${var.pes_instance_type}"
   user_data     = "${data.template_file.user-init.rendered}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_alb" "pes-app-alb" {
+  name               = "pes-app-alb"
+  load_balancer_type = "application"
+  internal           = false
+  security_groups    = ["${aws_security_group.pes_public_sg.id}"]
+
+  subnets = ["${aws_subnet.pes_public1_subnet.id}",
+    "${aws_subnet.pes_public2_subnet.id}",
+  ]
+
+  enable_deletion_protection = true
+}
+
+resource "aws_alb_target_group" "pes_target_group_one" {
+  name     = "pes-target-group-one"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = "${aws_vpc.pes_vpc.id}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  health_check {
+    path                = "/"
+    port                = 2001
+    healthy_threshold   = 6
+    unhealthy_threshold = 2
+    timeout             = 2
+    interval            = 5
+    matcher             = "200"
+  }
+}
+
+resource "aws_alb_listener" "pes_alb_listener" {
+  default_action {
+    target_group_arn = "${aws_alb_target_group.pes_target_group_one.arn}"
+    type             = "forward"
+  }
+
+  load_balancer_arn = "${aws_alb.pes-app-alb.arn}"
+  port              = 80
+  protocol          = "HTTP"
+}
+
+resource "aws_alb_listener_rule" "pes_rule_1" {
+  action {
+    target_group_arn = "${aws_alb_target_group.pes_target_group_one.arn}"
+    type             = "forward"
+  }
+
+  condition {
+    field = "host-header"
+
+    values = ["employee-services-stg.test.com"]
+  }
+
+  listener_arn = "${aws_alb_listener.pes_alb_listener.id}"
+  priority     = 100
+}
+
+resource "aws_autoscaling_group" "pes_asg" {
+  name                      = "pes-app-asg"
+  max_size                  = 6
+  min_size                  = 2
+  health_check_grace_period = 300
+  health_check_type         = "ELB"
+  desired_capacity          = 2
+  force_delete              = true
+  launch_configuration      = "${aws_launch_configuration.pes_lc.id}"
+
+  vpc_zone_identifier = ["${aws_subnet.pes_private1_subnet.id}",
+    "${aws_subnet.pes_private2_subnet.id}",
+  ]
+
+  target_group_arns = ["${aws_alb_target_group.pes_target_group_one}"]
 
   lifecycle {
     create_before_destroy = true
