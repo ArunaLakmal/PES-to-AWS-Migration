@@ -284,3 +284,18 @@ resource "aws_elb" "pes_elb" {
     Name = "pes-elb"
   }
 }
+
+data "aws_ami" "golden_ami" {
+  most_recent = true
+  owners = ["amazon"]
+  
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
