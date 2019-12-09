@@ -286,6 +286,7 @@ resource "aws_alb" "pes-app-alb" {
   name               = "pes-app-alb"
   load_balancer_type = "application"
   internal           = false
+  security_groups    = "${aws_security_group.pes_public_sg.id}"
 
   subnets = ["${aws_subnet.pes_public1_subnet.id}",
     "${aws_subnet.pes_public2_subnet.id}",
