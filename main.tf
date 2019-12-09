@@ -283,5 +283,13 @@ resource "aws_launch_configuration" "pes_lc" {
 }
 
 resource "aws_alb" "pes-app-alb" {
-  name = "pes-app-alb"
+  name               = "pes-app-alb"
+  load_balancer_type = "application"
+  internal           = false
+
+  subnets = ["${aws_subnet.pes_public1_subnet.id}",
+    "${aws_subnet.pes_public2_subnet.id}",
+  ]
+
+  enable_deletion_protection = true
 }
