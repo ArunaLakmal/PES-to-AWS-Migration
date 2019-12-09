@@ -357,7 +357,7 @@ resource "aws_autoscaling_group" "pes_asg" {
     "${aws_subnet.pes_private2_subnet.id}",
   ]
 
-  target_group_arns = ["${aws_alb_target_group.pes_target_group_one.id}"]
+  target_group_arns = ["${aws_alb_target_group.pes_target_group_one.arn}"]
 
   lifecycle {
     create_before_destroy = true
