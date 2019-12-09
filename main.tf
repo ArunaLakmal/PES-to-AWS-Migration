@@ -250,41 +250,7 @@ resource "aws_db_instance" "pes_rds_instance" {
   skip_final_snapshot    = true
 }
 
-#---- Load Balancer ----
-resource "aws_elb" "pes_elb" {
-  name = "pes-elb"
-
-  subnets = ["${aws_subnet.pes_public1_subnet.id}",
-    "${aws_subnet.pes_public2_subnet.id}",
-  ]
-
-  security_groups = ["${aws_security_group.pes_public_sg.id}"]
-
-  listener {
-    instance_port     = 80
-    instance_protocol = "http"
-    lb_port           = 80
-    lb_protocol       = "http"
-  }
-
-  health_check {
-    healthy_threshold   = "${var.elb_healthy_threshold}"
-    unhealthy_threshold = "${var.elb_unhealthy_threshold}"
-    timeout             = "${var.elb_timeout}"
-    target              = "TCP:80"
-    interval            = "${var.elb_interval}"
-  }
-
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
-
-  tags = {
-    Name = "pes-elb"
-  }
-}
-
+#----- AMI -----
 data "aws_ami" "golden_ami" {
   most_recent = true
   owners      = ["amazon"]
@@ -304,6 +270,7 @@ data "template_file" "user-init" {
   template = "${file("${path.module}/userdata.tpl")}"
 }
 
+#----- Launch Configuration ----
 resource "aws_launch_configuration" "pes_lc" {
   name_prefix   = "pes_lc-"
   image_id      = "${data.aws_ami.golden_ami.id}"
@@ -313,4 +280,8 @@ resource "aws_launch_configuration" "pes_lc" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+resource "aws_alb" "pes-app-alb" {
+  name = "pes-app-alb"
 }
