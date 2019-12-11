@@ -256,6 +256,11 @@ data "aws_ami" "golden_ami" {
   owners      = ["amazon"]
 
   filter {
+    name   = "name"
+    values = ["Ubuntu"]
+  }
+
+  filter {
     name   = "root-device-type"
     values = ["ebs"]
   }
