@@ -1,5 +1,6 @@
 provider "aws" {
   region = "${var.aws_region}"
+  profile = "${var.aws_profile}"
 }
 
 #---- VPC ----
@@ -176,6 +177,15 @@ resource "aws_security_group" "pes_public_sg" {
   name        = "pes_public_sg"
   description = "ELB Public Access"
   vpc_id      = "${aws_vpc.pes_vpc.id}"
+
+  #Allow SSH
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   #Http Allow
   ingress {
