@@ -346,7 +346,7 @@ resource "aws_alb_listener" "pes_alb_listener" {
   }
 
   load_balancer_arn = "${aws_alb.pes-app-alb.arn}"
-  port              = 80
+  port              = 8081
   protocol          = "HTTP"
 }
 
