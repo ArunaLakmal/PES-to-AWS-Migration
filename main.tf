@@ -257,7 +257,7 @@ data "aws_ami" "golden_ami" {
 
   filter {
     name   = "name"
-    values = ["Ubuntu"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
   }
 
   filter {
