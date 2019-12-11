@@ -10,6 +10,8 @@ cidrs = {
   rds2     = "10.0.6.0/24"
   rds3     = "10.0.7.0/24"
 }
+key_name                = "ironman"
+public_key_path         = "~/.ssh/ironman.pub"
 db_instance_class       = "db.t2.micro"
 dbname                  = "pesdb"
 dbuser                  = "pesuser"

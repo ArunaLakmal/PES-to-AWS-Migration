@@ -236,6 +236,12 @@ resource "aws_security_group" "rds_security_group" {
   }
 }
 
+#----- Key Pair ------
+resource "aws_key_pair" "pes_key" {
+  key_name   = "${var.key_name}"
+  public_key = "${file(var.public_key_path)}"
+}
+
 #----- RDS Instance -----
 resource "aws_db_instance" "pes_rds_instance" {
   allocated_storage      = 10
@@ -280,6 +286,7 @@ resource "aws_launch_configuration" "pes_lc" {
   name_prefix   = "pes_lc-"
   image_id      = "${data.aws_ami.golden_ami.id}"
   instance_type = "${var.pes_instance_type}"
+  key_name      = "${aws_key_pair.pes_key.id}"
   user_data     = "${data.template_file.user-init.rendered}"
 
   lifecycle {
