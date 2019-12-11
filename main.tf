@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "${var.aws_region}"
+  region  = "${var.aws_region}"
   profile = "${var.aws_profile}"
 }
 
@@ -293,11 +293,12 @@ data "template_file" "user-init" {
 
 #----- Launch Configuration ----
 resource "aws_launch_configuration" "pes_lc" {
-  name_prefix   = "pes_lc-"
-  image_id      = "${data.aws_ami.golden_ami.id}"
-  instance_type = "${var.pes_instance_type}"
-  key_name      = "${aws_key_pair.pes_key.id}"
-  user_data     = "${data.template_file.user-init.rendered}"
+  name_prefix     = "pes_lc-"
+  image_id        = "${data.aws_ami.golden_ami.id}"
+  instance_type   = "${var.pes_instance_type}"
+  key_name        = "${aws_key_pair.pes_key.id}"
+  user_data       = "${data.template_file.user-init.rendered}"
+  security_groups = ["${aws_security_group.pes_private_sg.id}", ]
 
   lifecycle {
     create_before_destroy = true
