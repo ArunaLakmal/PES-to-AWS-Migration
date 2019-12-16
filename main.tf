@@ -306,7 +306,7 @@ resource "aws_launch_configuration" "pes_lc" {
 }
 
 resource "aws_alb" "pes-app-alb" {
-  name               = "${lookup(var.pes_alb_name, var.env)}"
+  name               = "${lookup(var.pes-alb-name, var.env)}"
   load_balancer_type = "application"
   internal           = false
   security_groups    = ["${aws_security_group.pes_public_sg.id}"]
@@ -319,7 +319,7 @@ resource "aws_alb" "pes-app-alb" {
 }
 
 resource "aws_alb_target_group" "pes_target_group_one" {
-  name     = "${lookup(var.pes_tg_name, var.env)}"
+  name     = "${lookup(var.pes-tg-name, var.env)}"
   port     = 80
   protocol = "HTTP"
   vpc_id   = "${aws_vpc.pes_vpc.id}"
