@@ -23,7 +23,7 @@ variable "pes_asg_name" {
     prod = "pes_prod"
   }
 }
-variable "pes-alb-name" {
+variable "pesalbname" {
   type        = "map"
   description = "Name of the ALB"
   default = {
@@ -31,7 +31,7 @@ variable "pes-alb-name" {
     prod = "pes_prod_alb"
   }
 }
-variable "pes-tg-name" {
+variable "pestgname" {
   type        = "map"
   description = "target group one"
   default = {
