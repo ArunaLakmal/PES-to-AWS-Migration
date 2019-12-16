@@ -345,7 +345,7 @@ resource "aws_alb_listener" "pes_alb_listener" {
     type             = "forward"
   }
 
-  load_balancer_arn = "${laws_alb.pes-app-alb.arn}"
+  load_balancer_arn = "${aws_alb.pes-app-alb.arn}"
   port              = 8081
   protocol          = "HTTP"
 }
