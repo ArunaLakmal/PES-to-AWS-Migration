@@ -367,7 +367,7 @@ resource "aws_alb_listener_rule" "pes_rule_1" {
 }
 
 resource "aws_autoscaling_group" "pes_asg" {
-  name                      = "pes-app-asg"
+  name                      = "${lookup(var.pes_asg_name, var.env)}"
   max_size                  = 6
   min_size                  = 2
   health_check_grace_period = 300
