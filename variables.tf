@@ -45,3 +45,10 @@ variable "elb_unhealthy_threshold" {}
 variable "elb_timeout" {}
 variable "elb_interval" {}
 variable "pes_instance_type" {}
+variable "pes_access_url" {
+  type = "map"
+  default = {
+    dev = "access.dev.techcrumble.cloud"
+    prod = "access.prod.techcrumble.cloud"
+  }
+}

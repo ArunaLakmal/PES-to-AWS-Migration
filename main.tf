@@ -359,7 +359,7 @@ resource "aws_alb_listener_rule" "pes_rule_1" {
   condition {
     field = "host-header"
 
-    values = ["access.techcrumble.cloud"]
+    values = ["${lookup(var.pes_access_url, key, var.env)}"]
   }
 
   listener_arn = "${aws_alb_listener.pes_alb_listener.arn}"
