@@ -35,8 +35,8 @@ variable "pestgname" {
   type        = "map"
   description = "target group one"
   default = {
-    dev  = "pes_dev_tg_one"
-    prod = "pes_prod_tg_one"
+    dev  = "pes-dev-tg-one"
+    prod = "pes-prod-tg-one"
   }
 }
 
