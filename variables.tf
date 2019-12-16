@@ -19,16 +19,16 @@ variable "pes_asg_name" {
   type        = "map"
   description = "Name of the asg."
   default = {
-    dev  = "pes_dev"
-    prod = "pes_prod"
+    dev  = "pesdev"
+    prod = "pesprod"
   }
 }
 variable "pesalbname" {
   type        = "map"
   description = "Name of the ALB"
   default = {
-    dev  = "pes_dev_alb"
-    prod = "pes_prod_alb"
+    dev  = "pesdevalb"
+    prod = "pesprodalb"
   }
 }
 variable "pestgname" {
