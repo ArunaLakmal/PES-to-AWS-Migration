@@ -39,14 +39,6 @@ variable "pestgname" {
     prod = "pes-prod-tg-one"
   }
 }
-variable "pes_listener" {
-  type        = "map"
-  description = "listener test"
-  default = {
-    dev  = "pes-dev-listener"
-    prod = "pes-prod-listener"
-  }
-}
 
 variable "elb_healthy_threshold" {}
 variable "elb_unhealthy_threshold" {}

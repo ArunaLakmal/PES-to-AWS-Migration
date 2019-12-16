@@ -340,20 +340,19 @@ resource "aws_alb_target_group" "pes_target_group_one" {
 }
 
 resource "aws_alb_listener" "pes_alb_listener" {
-  name = "${lookup(var.pes_listener, var.env)}"
   default_action {
     target_group_arn = "${aws_alb_target_group.pes_target_group_one.arn}"
     type             = "forward"
   }
 
-  load_balancer_arn = "${lookup(aws_alb.pes-app-alb.arn, var.env)}"
+  load_balancer_arn = "${laws_alb.pes-app-alb.arn}"
   port              = 8081
   protocol          = "HTTP"
 }
 
 resource "aws_alb_listener_rule" "pes_rule_1" {
   action {
-    target_group_arn = "${lookup(aws_alb_target_group.pes_target_group_one.arn, var.env)}"
+    target_group_arn = "${aws_alb_target_group.pes_target_group_one.arn}"
     type             = "forward"
   }
 
@@ -363,7 +362,7 @@ resource "aws_alb_listener_rule" "pes_rule_1" {
     values = ["access.techcrumble.cloud"]
   }
 
-  listener_arn = "${lookup(aws_alb_listener.pes_alb_listener.arn, var.env)}"
+  listener_arn = "${aws_alb_listener.pes_alb_listener.arn}"
   priority     = 100
 }
 
