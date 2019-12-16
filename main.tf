@@ -306,7 +306,7 @@ resource "aws_launch_configuration" "pes_lc" {
 }
 
 resource "aws_alb" "pes-app-alb" {
-  name               = "pes-app-alb"
+  name               = "${lookup(var.pes_alb_name, var.env)}"
   load_balancer_type = "application"
   internal           = false
   security_groups    = ["${aws_security_group.pes_public_sg.id}"]
@@ -319,7 +319,7 @@ resource "aws_alb" "pes-app-alb" {
 }
 
 resource "aws_alb_target_group" "pes_target_group_one" {
-  name     = "pes-target-group-one"
+  name     = "${lookup(var.pes_tg_name, var.env)}"
   port     = 80
   protocol = "HTTP"
   vpc_id   = "${aws_vpc.pes_vpc.id}"
@@ -341,18 +341,18 @@ resource "aws_alb_target_group" "pes_target_group_one" {
 
 resource "aws_alb_listener" "pes_alb_listener" {
   default_action {
-    target_group_arn = "${aws_alb_target_group.pes_target_group_one.arn}"
+    target_group_arn = "${lookup(aws_alb_target_group.pes_target_group_one.arn, var.env)}"
     type             = "forward"
   }
 
-  load_balancer_arn = "${aws_alb.pes-app-alb.arn}"
+  load_balancer_arn = "${lookup(aws_alb.pes-app-alb.arn, var.env)}"
   port              = 8081
   protocol          = "HTTP"
 }
 
 resource "aws_alb_listener_rule" "pes_rule_1" {
   action {
-    target_group_arn = "${aws_alb_target_group.pes_target_group_one.arn}"
+    target_group_arn = "${lookup(aws_alb_target_group.pes_target_group_one.arn, var.env)}"
     type             = "forward"
   }
 
@@ -362,7 +362,7 @@ resource "aws_alb_listener_rule" "pes_rule_1" {
     values = ["access.techcrumble.cloud"]
   }
 
-  listener_arn = "${aws_alb_listener.pes_alb_listener.id}"
+  listener_arn = "${lookup(aws_alb_listener.pes_alb_listener.arn, var.env)}"
   priority     = 100
 }
 
@@ -380,7 +380,7 @@ resource "aws_autoscaling_group" "pes_asg" {
     "${aws_subnet.pes_private2_subnet.id}",
   ]
 
-  target_group_arns = ["${aws_alb_target_group.pes_target_group_one.arn}"]
+  target_group_arns = ["${lookup(aws_alb_target_group.pes_target_group_one.arn, var.env)}"]
 
   lifecycle {
     create_before_destroy = true
