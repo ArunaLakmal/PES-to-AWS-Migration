@@ -340,8 +340,9 @@ resource "aws_alb_target_group" "pes_target_group_one" {
 }
 
 resource "aws_alb_listener" "pes_alb_listener" {
+  name = "${lookup(var.pes_listener, var.env)}"
   default_action {
-    target_group_arn = "${lookup(aws_alb_target_group.pes_target_group_one.arn, var.env)}"
+    target_group_arn = "${aws_alb_target_group.pes_target_group_one.arn}"
     type             = "forward"
   }
 
